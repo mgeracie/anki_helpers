@@ -1,0 +1,69 @@
+:root {
+    --color-bg: #222222;
+    --color-fg: #ffffff;
+    --tone1:    #eb4034;
+    --tone2:    #ebe23d;
+    --tone3:    #5ccc00;
+    --tone4:    #77cbff;
+    --tone5:    gray;
+}
+
+@media (prefers-color-scheme: light) {
+:root {
+    --color-bg: #dee4e7;
+    --color-fg: #000000;
+    --tone1:    #e5655b;
+    --tone2:    #eb973d;
+    --tone3:    #7ec543;
+    --tone4:    #77cbff;
+    --tone5:    gray;
+}
+}
+
+body {
+    background-color: var(--color-bg);
+    color:            var(--color-fg);
+}
+
+.card {
+    font-family:      arial;
+    font-size:        20px;
+    text-align:       center;
+    color:            var(--color-fg);
+    background-color: var(--color-bg);
+    word-wrap:        break-word; 
+}
+
+.tags {
+    color:    gray;
+    text-align: right;
+    font-size:  10pt;
+}
+.meaning {
+    padding-top: 1em;
+    font-size:   16px;
+}
+.reading {
+    padding-top:    1em;
+    font-size:      16px;
+    font-style:     italic;
+    padding-bottom: 0.5em;
+}
+.chinese {
+    font-size: 70px;
+}
+.win .chinese {
+    font-family:
+      "FangSong",
+      "MS Mincho",
+      "ＭＳ 明朝";
+}
+.mobile .chinese {
+    font-family: "Hiragino Mincho ProN";
+}
+
+.tone1 {color: var(--tone1);}
+.tone2 {color: var(--tone2);}
+.tone3 {color: var(--tone3);}
+.tone4 {color: var(--tone4);}
+.tone5 {color: var(--tone5);}
