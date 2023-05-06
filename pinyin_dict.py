@@ -1,4 +1,4 @@
-correctInputAndOutput = {
+num2pin = {
     'bo1': 'bō',
     'bo2': 'bó',
     'bo3': 'bǒ',
@@ -1636,3 +1636,5 @@ correctInputAndOutput = {
     'lve3': 'lüě',
     'lve4': 'lüè'
   }
+
+pin2num = { v : k for k, v in num2pin.items()}
