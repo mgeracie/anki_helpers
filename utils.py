@@ -1,4 +1,32 @@
-num2pin = {
+import re
+
+def strip_html(x: str):
+    CLEANR = re.compile(r'<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
+
+    while True:
+        input = x
+        x = x.strip()
+        x = re.sub(r"(^<div>|</div>$)", r"", x)
+        x = re.sub(r"(<div>|</div>|<br>)", r"\n", x)
+        x = re.sub(r"\n\s*\n", r"\n", x)
+        x = re.sub(CLEANR, r"", x)
+        if x == input:
+            break
+
+    while True:
+        input = x
+        x = re.sub(r"\n", r"<br>", x)
+        if x == input:
+            break
+
+    return(x)
+
+def breakout_syllables_basic(x: str):
+    """For a single word, not a string of words."""
+    # x = x.split("'")
+    return x
+
+syl_unsorted = {
     'bo1': 'bō',
     'bo2': 'bó',
     'bo3': 'bǒ',
@@ -1637,4 +1665,8 @@ num2pin = {
     'lve4': 'lüè'
   }
 
+num2pin = dict(sorted(syl_unsorted.items(), key = lambda x : len(x[1]), reverse = True))
 pin2num = { v : k for k, v in num2pin.items()}
+
+pin_all_syl = list(pin2num.keys())
+num_all_syl = list(pin2num.values())
