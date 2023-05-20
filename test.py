@@ -72,5 +72,23 @@ def break_pinyin(s):
 
     return output
 
+def stylize_pinyin(s):
+    span_1 = "<span class = 'tone1'>"
+    span_2 = "<span class = 'tone2'>"
+    span_3 = "<span class = 'tone3'>"
+    span_4 = "<span class = 'tone4'>"
+    span_5 = "<span class = 'tone5'>"
+    end_span = "</span>"
+    s_list = break_pinyin(s)
+    
+    s_out = "".join([span_1 + s[0] + end_span if s[1] == 1
+                        else span_2 + s[0] + end_span if s[1] == 2
+                        else span_3 + s[0] + end_span if s[1] == 3
+                        else span_4 + s[0] + end_span if s[1] == 4
+                        else span_5 + s[0] + end_span
+                        for s in s_list])
+    
+    return s_out
+
 s1 = "hello there gōngyuán,  44 běi zhuáng - qiánzhuáng3"
 s2 = "hello there gōngyuán,  44 běi zhuáng - qiánzhuáng"
