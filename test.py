@@ -1,3 +1,5 @@
+# rebase needed
+
 import re
 from more_itertools import collapse
 from utils import *
@@ -28,11 +30,6 @@ def is_single_syl(s):
     s_pin = (s in pin_all_syl)
     s_contains_pin = (sum([len(re.findall(syl, s)) for syl in pin_all_syl]) == 0)
     return s_pin or s_contains_pin
-
-def is_single_char(s):
-    if len(s) != 1:
-        return False
-    return len(re.findall(r'[\u4e00-\u9fff]+', s)) == 1
 
 def break_simple(s, is_char = False):
     s_split = ""
@@ -126,12 +123,3 @@ d = "园3"
 
 c1 = "hello there 公园, 44 北 妆 - 前妆3"
 c2 = "hello there 公园, 44 北 妆 - 前妆"
-
-def break_characters(s):
-    # break up by whitespace if you can
-    if s != " ":
-        s_split = re.findall(r'\S+', s)
-        s_split = [s_split[int(i/2)] if (i % 2) == 0 else " "  for i in range(2 * len(s_split) - 1)]
-        if len(s_split) > 1:
-            return s_split
-    return s_split
