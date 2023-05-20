@@ -25,7 +25,12 @@ def is_single_syl(s):
     s_contains_pin = (sum([len(re.findall(syl, s)) for syl in pin_all_syl]) == 0)
     return s_pin or s_contains_pin
 
-def break_simple(s: str):
+def is_single_char(s):
+    if len(s) != 1:
+        return False
+    return len(re.findall(r'[\u4e00-\u9fff]+', s)) == 1
+
+def break_simple(s: str, is_char = False):
     s_split = ""
     # return if already a single syllable
     if (is_single_syl(s) or s == " "):
@@ -38,12 +43,18 @@ def break_simple(s: str):
         if len(s_split) > 1:
             return s_split
     
+    # split up by characters
+    if is_char:
+        s_split = re.split(r'([\u4e00-\u9fff]+)', s)
+        s_split = [t.strip() for t in re.split(f"({syl})", s) if t.strip() != ""]
+        s_split = list(collapse(s_split))
     # otherwise, split up by pinyin syllables
-    for syl in pin_all_syl:
-        if syl in s:
-            s_split = [t.strip() for t in re.split(f"({syl})", s) if t.strip() != ""]
-            s_split = list(collapse(s_split))
-            break
+    else:
+        for syl in pin_all_syl:
+            if syl in s:
+                s_split = [t.strip() for t in re.split(f"({syl})", s) if t.strip() != ""]
+                s_split = list(collapse(s_split))
+                break
 
     return s_split
 
@@ -92,3 +103,15 @@ def stylize_pinyin(s):
 
 s1 = "hello there gōngyuán,  44 běi zhuáng - qiánzhuáng3"
 s2 = "hello there gōngyuán,  44 běi zhuáng - qiánzhuáng"
+
+c1 = "hello there 公园, 44 北 妆 - 前妆3"
+c2 = "园"
+
+def break_characters(s):
+    # break up by whitespace if you can
+    if s != " ":
+        s_split = re.findall(r'\S+', s)
+        s_split = [s_split[int(i/2)] if (i % 2) == 0 else " "  for i in range(2 * len(s_split) - 1)]
+        if len(s_split) > 1:
+            return s_split
+    return s_split
