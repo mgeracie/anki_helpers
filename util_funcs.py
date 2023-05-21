@@ -108,3 +108,9 @@ def stylize_str(s_pin: str, s_char: str = "") -> str:
                         else span_5 + s[0] + end_span
                         for s in s_list])
     return s_out
+
+def get_silhouette(s_char: str) -> str:
+    s_out = re.sub(r"[\u4e00-\u9fff]", "_ ", s_char)
+    s_out = re.sub(r"\s+", " ", s_out)
+    s_out = re.sub(r"_ $", "_", s_out)
+    return s_out
