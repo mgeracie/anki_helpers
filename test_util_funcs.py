@@ -40,15 +40,16 @@ assert(break_simple("a\n fd") == ["a", " ", "fd"])
 assert(break_simple("gōngyuán") == ["gōng", "yuán"])
 assert(break_simple("3gōngready") == ["3", "gōng", "ready"])
 
-
 s1 = "hello there gōngyuán,  44 běi zhuáng - qiánzhuáng3"
 s2 = "hello there gōngyuán,  44 běi zhuáng - qiánzhuáng"
-
-c = "公园"
-d = "园3"
 
 c1 = "hello there 公园, 44 北 妆 - 前妆3"
 c2 = "hello there 公园, 44 北 妆 - 前妆"
 
+assert(break_string(s1, c1) == [('hello there ', 5), ('公', 1), ('园', 2), (', 44 ', 5), ('北 ', 3), ('妆 ', 2), ('- ', 5), ('前妆', 2), ('3', 5)])
+assert(break_string(s2, c2) == [('hello there ', 5), ('公', 1), ('园', 2), (', 44 ', 5), ('北 ', 3), ('妆 ', 2), ('- ', 5), ('前妆', 2)])
 
-print("NO ERRORS!")
+assert(stylize_str(s1) == "<span class = 'tone5'>hello there </span><span class = 'tone1'>gōng</span><span class = 'tone2'>yuán</span><span class = 'tone5'>, 44 </span><span class = 'tone3'>běi </span><span class = 'tone2'>zhuáng </span><span class = 'tone5'>- </span><span class = 'tone2'>qiánzhuáng</span><span class = 'tone5'>3</span>")
+assert(stylize_str(s1, c1) == "<span class = 'tone5'>hello there </span><span class = 'tone1'>公</span><span class = 'tone2'>园</span><span class = 'tone5'>, 44 </span><span class = 'tone3'>北 </span><span class = 'tone2'>妆 </span><span class = 'tone5'>- </span><span class = 'tone2'>前妆</span><span class = 'tone5'>3</span>")
+
+print("NO ERRORS")

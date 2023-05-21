@@ -2,6 +2,9 @@ import re
 from more_itertools import collapse
 from utils import *
 
+def is_char_str(s: str) -> bool:
+    return len(re.findall(r"[\u4e00-\u9fff]", s)) > 0
+
 def is_single_syl(s: str) -> bool:
     if s == " ":
         return True
@@ -30,7 +33,7 @@ def get_tone(syl: str) -> tuple:
 
 def break_simple(s: str) -> list:
     """Performs a single step in the process of breaking up a string into its syllables."""
-    is_char = len(re.findall(r"[\u4e00-\u9fff]", s)) > 0
+    is_char = is_char_str(s)
     # return if already a single syllable
     if is_single_syl(s):
         return [s]
@@ -52,37 +55,36 @@ def break_simple(s: str) -> list:
                 break
     return s_split
 
-def break_string_full(s, is_char = False):
+def fully_break_string_prelim(s: str) -> list:
     s_list = [s]
     is_broken = False
     while not is_broken: 
-        s_list = [break_simple(s, is_char) for s in collapse(s_list)]
-        while (len(s_list) == 1) and (type(s_list[0]) == list):
-            s_list = s_list[0]
+        s_list = [break_simple(s) for s in collapse(s_list)]
+        while (len(s_list) == 1) and (type(s_list[0]) == list): s_list = s_list[0]
         s_list = list(collapse(s_list))
         is_broken = all([is_single_syl(s) for s in s_list])
     s_list = [get_tone(s) for s in s_list]
     return s_list
 
-def break_char_string_full(s_char, s_pin):
-    s_pin_list = break_string_full(s_pin)
-    s_char_list = break_string_full(s_char, True)
-    s_char_list = [(s_char_list[i][0], s_pin_list[i][1]) for i in range(len(s_char_list))]
-    return s_char_list
-
-def break_string(s, s_char = ""):
+def fully_break_string(s_pin: str, s_char: str = "") -> list:
+    """Break a string fully down to it's individual syllables with tone assignments.
+    This way can match characters to the tones of pinyin syllables. They will be combined in break_string."""
+    s_out = fully_break_string_prelim(s_pin)
     if s_char != "":
-        s_broken = break_char_string_full(s_char, s)
-    else:
-        s_broken = break_string_full(s)
+        s_char_list = fully_break_string_prelim(s_char)
+        s_out = [(s_char_list[i][0], s_out[i][1]) for i in range(len(s_char_list))]
+    return s_out
+
+def break_string(s_pin: str, s_char: str = "") -> list:
+    s_broken = fully_break_string(s_pin, s_char)
     output = []
     in_process_syl = ("", 5)
     for i in range(0, len(s_broken)):
         syl = s_broken[i]
         if in_process_syl[0] == "":
             in_process_syl = syl
-        elif in_process_syl[1] == syl[1]:
-            in_process_syl = (in_process_syl[0] + syl[0], syl[1])
+        elif (in_process_syl[1] == syl[1]) or (syl[0] == " "):
+            in_process_syl = (in_process_syl[0] + syl[0], in_process_syl[1])
         else:
             output.append(in_process_syl)
             in_process_syl = syl
@@ -91,20 +93,18 @@ def break_string(s, s_char = ""):
 
     return output
 
-def stylize_pinyin(s):
+def stylize_str(s_pin: str, s_char: str = "") -> str:
     span_1 = "<span class = 'tone1'>"
     span_2 = "<span class = 'tone2'>"
     span_3 = "<span class = 'tone3'>"
     span_4 = "<span class = 'tone4'>"
     span_5 = "<span class = 'tone5'>"
     end_span = "</span>"
-    s_list = break_string(s)
-    
+    s_list = break_string(s_pin, s_char)
     s_out = "".join([span_1 + s[0] + end_span if s[1] == 1
                         else span_2 + s[0] + end_span if s[1] == 2
                         else span_3 + s[0] + end_span if s[1] == 3
                         else span_4 + s[0] + end_span if s[1] == 4
                         else span_5 + s[0] + end_span
                         for s in s_list])
-    
     return s_out
