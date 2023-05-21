@@ -15,7 +15,6 @@ def is_single_syl(s: str) -> bool:
     s_no_pinyin = sum([len(re.findall(syl, s)) for syl in pin_all_syl]) == 0
     return s_is_pinyin_syl or s_no_pinyin
 
-
 def get_tone(syl: str) -> tuple:
     if syl in pin_all_syl:
         if len(re.findall(r"(ā|ē|ī|ō|ū|ǖ)", syl)) == 1:
@@ -29,22 +28,20 @@ def get_tone(syl: str) -> tuple:
     else:
         return (syl, 5)
 
-def break_simple(s, is_char = False):
-    s_split = ""
+def break_simple(s: str) -> list:
+    """Performs a single step in the process of breaking up a string into its syllables."""
+    is_char = len(re.findall(r"[\u4e00-\u9fff]", s)) > 0
     # return if already a single syllable
-    if (is_single_syl(s) or s == " "):
+    if is_single_syl(s):
         return [s]
-
     # break up by whitespace if you can
-    if s != " ":
-        s_split = re.findall(r'\S+', s)
-        s_split = [s_split[int(i/2)] if (i % 2) == 0 else " "  for i in range(2 * len(s_split) - 1)]
-        if len(s_split) > 1:
-            return s_split
-    
+    s_split = re.findall(r'\S+', s)
+    s_split = [s_split[int(i/2)] if (i % 2) == 0 else " "  for i in range(2 * len(s_split) - 1)]
+    if len(s_split) > 1:
+        return s_split 
     # break up by char
-    if is_char:
-        s_split = [t.strip() for t in re.split(r"([\u4e00-\u9fff])", s)  if t.strip() != ""]
+    elif is_char:
+        s_split = [t.strip() for t in re.split(r"([\u4e00-\u9fff])", s) if t.strip() != ""]
         s_split = list(collapse(s_split))
     # break up by pinyin
     else:
@@ -53,7 +50,6 @@ def break_simple(s, is_char = False):
                 s_split = [t.strip() for t in re.split(f"({syl})", s) if t.strip() != ""]
                 s_split = list(collapse(s_split))
                 break
-
     return s_split
 
 def break_string_full(s, is_char = False):
@@ -112,12 +108,3 @@ def stylize_pinyin(s):
                         for s in s_list])
     
     return s_out
-
-s1 = "hello there gōngyuán,  44 běi zhuáng - qiánzhuáng3"
-s2 = "hello there gōngyuán,  44 běi zhuáng - qiánzhuáng"
-
-c = "公园"
-d = "园3"
-
-c1 = "hello there 公园, 44 北 妆 - 前妆3"
-c2 = "hello there 公园, 44 北 妆 - 前妆"
