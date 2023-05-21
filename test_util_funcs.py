@@ -1,1 +1,32 @@
 from util_funcs import *
+
+assert(is_single_syl("a"))
+assert(is_single_syl("ads;kflj"))
+assert(is_single_syl("yuán"))
+assert(is_single_syl("公"))
+assert(is_single_syl("52"))
+assert(not is_single_syl("ads; kflj"))
+assert(not is_single_syl("园3"))
+assert(not is_single_syl("3园"))
+assert(not is_single_syl("公园"))
+assert(not is_single_syl("公7园"))
+assert(not is_single_syl("公 园"))
+assert(not is_single_syl("red 园"))
+assert(not is_single_syl("gōngyuán"))
+assert(not is_single_syl("gyuán"))
+assert(not is_single_syl("yuá"))
+assert(not is_single_syl("\t"))
+assert(not is_single_syl("\n"))
+assert(not is_single_syl("    "))
+
+assert(get_tone("a")[1] == 5)
+assert(get_tone("aasdf")[1] == 5)
+assert(get_tone(" ")[1] == 5)
+assert(get_tone("78")[1] == 5)
+assert(get_tone("nüē")[1] == 1)
+assert(get_tone("zhuáng")[1] == 2)
+assert(get_tone("nǚ")[1] == 3)
+assert(get_tone("yuàn")[1] == 4)
+
+
+print("NO ERRORS!")

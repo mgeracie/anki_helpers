@@ -21,11 +21,6 @@ def strip_html(x: str):
 
     return(x)
 
-def breakout_syllables_basic(x: str):
-    """For a single word, not a string of words."""
-    # x = x.split("'")
-    return x
-
 syl_unsorted = {
     'bo1': 'bō',
     'bo2': 'bó',

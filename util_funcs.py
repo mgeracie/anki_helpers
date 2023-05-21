@@ -2,7 +2,7 @@ import re
 from more_itertools import collapse
 from utils import *
 
-def is_single_syl(s):
+def is_single_syl(s: str) -> bool:
     if s == " ":
         return True
     if len(re.findall(r"\s", s)) > 0:
@@ -11,12 +11,12 @@ def is_single_syl(s):
         return False
     if len(re.findall(r"[\u4e00-\u9fff]", s)) == 1 and len(s) > 1:
         return False
-    s_pin = (s in pin_all_syl)
-    s_contains_pin = (sum([len(re.findall(syl, s)) for syl in pin_all_syl]) == 0)
-    return s_pin or s_contains_pin
+    s_is_pinyin_syl = s in pin_all_syl
+    s_no_pinyin = sum([len(re.findall(syl, s)) for syl in pin_all_syl]) == 0
+    return s_is_pinyin_syl or s_no_pinyin
 
 
-def get_tone(syl):
+def get_tone(syl: str) -> tuple:
     if syl in pin_all_syl:
         if len(re.findall(r"(ā|ē|ī|ō|ū|ǖ)", syl)) == 1:
             return (syl, 1)
