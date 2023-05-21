@@ -4,6 +4,7 @@ assert(is_single_syl("a"))
 assert(is_single_syl("ads;kflj"))
 assert(is_single_syl("yuán"))
 assert(is_single_syl("公"))
+assert(is_single_syl("視"))
 assert(is_single_syl("52"))
 assert(is_single_syl(" "))
 assert(not is_single_syl("ads; kflj"))
@@ -51,5 +52,7 @@ assert(break_string(s2, c2) == [('hello there ', 5), ('公', 1), ('园', 2), (',
 
 assert(stylize_str(s1) == "<span class = 'tone5'>hello there </span><span class = 'tone1'>gōng</span><span class = 'tone2'>yuán</span><span class = 'tone5'>, 44 </span><span class = 'tone3'>běi </span><span class = 'tone2'>zhuáng </span><span class = 'tone5'>- </span><span class = 'tone2'>qiánzhuáng</span><span class = 'tone5'>3</span>")
 assert(stylize_str(s1, c1) == "<span class = 'tone5'>hello there </span><span class = 'tone1'>公</span><span class = 'tone2'>园</span><span class = 'tone5'>, 44 </span><span class = 'tone3'>北 </span><span class = 'tone2'>妆 </span><span class = 'tone5'>- </span><span class = 'tone2'>前妆</span><span class = 'tone5'>3</span>")
+
+assert(strip_html('<div>Your """<span style=""""color: var(--field-fg); font-family: -apple-system-body; background: var(--field-bg);"""">"""Mom</span></div> <div> <br><br>\n\n    <br>\nis awesome</div> ') == 'Your """"""Mom<br>is awesome')
 
 print("NO ERRORS")

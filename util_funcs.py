@@ -114,3 +114,24 @@ def get_silhouette(s_char: str) -> str:
     s_out = re.sub(r"\s+", " ", s_out)
     s_out = re.sub(r"_ $", "_", s_out)
     return s_out
+
+def strip_html(x: str):
+    CLEANR = re.compile(r'<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
+
+    while True:
+        input = x
+        x = x.strip()
+        x = re.sub(r"(^<div>|</div>$)", r"", x)
+        x = re.sub(r"(<div>|</div>|<br>)", r"\n", x)
+        x = re.sub(r"\n\s*\n", r"\n", x)
+        x = re.sub(CLEANR, r"", x)
+        if x == input:
+            break
+
+    while True:
+        input = x
+        x = re.sub(r"\n", r"<br>", x)
+        if x == input:
+            break
+
+    return(x)
