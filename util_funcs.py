@@ -109,6 +109,13 @@ def stylize_str(s_pin: str, s_char: str = "") -> str:
                         for s in s_list])
     return s_out
 
+def safe_stylize_hanzi(s_pin: str, s_char: str = "") -> str:
+    try:
+        out = stylize_str(s_pin, s_char)
+    except:
+        out = s_char + " (color error)"
+    return out
+
 def get_silhouette(s_char: str) -> str:
     s_out = re.sub(r"[\u4e00-\u9fff]", "_ ", s_char)
     s_out = re.sub(r"\s+", " ", s_out)
