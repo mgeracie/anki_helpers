@@ -37,7 +37,8 @@ def get_tone(syl: str) -> tuple:
         return (syl, 5)
 
 def replace_special_char(s: str) -> str:
-    s_out = (s.replace("。", ".")
+    s_out = (s.replace("v", "ü")
+              .replace("。", ".")
               .replace("，", ",")
               .replace("？", "?")
               .replace("《", "\"")
@@ -127,5 +128,5 @@ def save_audio(s: str, dir: str, save: bool = True) -> str:
         try:
             gTTS(s, lang = "zh-CN").save(out_path)
         except:
-            return "FAILED WRITING: " + out_path
-    return out_path
+            return "FAILED WRITING: " + s
+    return f"[sound:{s}.mp3]"
