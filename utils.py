@@ -1,12 +1,14 @@
 import os
 import re
 import regex
+import zhon
 from pinyin_tone_converter.pinyin_tone_converter import PinyinToneConverter
 from utils import *
 from gtts import gTTS
 
 SPACE_RE = regex.compile(r"(\s+)")
 HANZI_RE = regex.compile(r"([\u4e00-\u9fff])")
+PINYIN_RE = regex.compile(zhon.pinyin.syllable, regex.I)
 
 span_1 = "<span class = 'tone1'>"
 span_2 = "<span class = 'tone2'>"
