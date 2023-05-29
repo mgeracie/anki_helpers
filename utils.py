@@ -1,55 +1,12 @@
+import os
+import re
 import regex
+from pinyin_tone_converter.pinyin_tone_converter import PinyinToneConverter
+from utils import *
+from gtts import gTTS
 
 SPACE_RE = regex.compile(r"(\s+)")
 HANZI_RE = regex.compile(r"([\u4e00-\u9fff])")
-HANZI_PINYIN_NUM_RE = regex.compile(
-        r"([\u4e00-\u9fff])|"
-        r"((?:[jqx])(?:iong[1-5]?|iōng|ióng|iǒng|iòng))|"
-        r"((?:[gkh]|zh|ch|sh)(?:uang[1-5]?|uāng|uáng|uǎng|uàng))|"
-        r"((?:[nljqx])(?:iang[1-5]?|iāng|iáng|iǎng|iàng))|"
-        r"((?:[bpmfdtnlgkhzcsrwy]|zh|ch|sh)(?:ang[1-5]?|āng|áng|ǎng|àng))|"
-        r"((?:[bpmdtnljqx])(?:iao[1-5]?|iāo|iáo|iǎo|iào))|"
-        r"((?:[bpmdtnljqx])(?:ian[1-5]?|iān|ián|iǎn|iàn))|"
-        r"((?:[bpmdtnljqxy])(?:ing[1-5]?|īng|íng|ǐng|ìng))|"
-        r"((?:[bpmfdtnlgkhzcsrw]|zh|ch|sh)(?:eng[1-5]?|ēng|éng|ěng|èng))|"
-        r"((?:[dtnlgkhzcsry]|zh|ch)(?:ong[1-5]?|ōng|óng|ǒng|òng))|"
-        r"((?:[gkh]|zh|ch|sh)(?:uai[1-5]?|uāi|uái|uǎi|uài))|"
-        r"((?:[dtnlgkhzcsrjqxy]|zh|ch|sh)(?:uan[1-5]?|uān|uán|uǎn|uàn))|"
-        r"((?:[bpmdtnlgkhzcsry]|zh|ch|sh)(?:ao[1-5]?|āo|áo|ǎo|ào))|"
-        r"((?:[bpmdtnlgkhzcsw]|zh|ch|sh)(?:ai[1-5]?|āi|ái|ǎi|ài))|"
-        r"((?:[bpmfdtnlgkhzcsrwy]|zh|ch|sh)(?:an[1-5]?|ān|án|ǎn|àn))|"
-        r"((?:[bpmfdngkhzcsrw]|zh|ch|sh)(?:en[1-5]?|ēn|én|ěn|èn))|"
-        r"((?:[bpmfdtnlgkhzsw]|zh|sh)(?:ei[1-5]?|ēi|éi|ěi|èi))|"
-        r"((?:[dljqx])(?:ia[1-5]?|iā|iá|iǎ|ià))|"
-        r"((?:[bpmdtnljqx])(?:ie[1-5]?|iē|ié|iě|iè))|"
-        r"((?:[mdnljqx])(?:iu[1-5]?|iū|iú|iǔ|iù))|"
-        r"((?:[bpmnljqxy])(?:in[1-5]?|īn|ín|ǐn|ìn))|"
-        r"((?:[pmfdtnlgkhzcsry]|zh|ch|sh)(?:ou[1-5]?|ōu|óu|ǒu|òu))|"
-        r"((?:[gkhr]|zh|ch|sh)(?:ua[1-5]?|uā|uá|uǎ|uà))|"
-        r"((?:[dtnlgkhzcsr]|zh|ch|sh)(?:uo[1-5]?|uō|uó|uǒ|uò))|"
-        r"((?:[dtgkhzcsr]|zh|ch|sh)(?:ui[1-5]?|uī|uí|uǐ|uì))|"
-        r"((?:[jqxy])(?:ue[1-5]?|uē|ué|uě|uè))|"
-        r"((?:[dtnlgkhzcsrjqxy]|zh|ch|sh)(?:un[1-5]?|ūn|ún|ǔn|ùn))|"
-        r"((?:[nl])(?:üe[1-5]?|ve[1-5]?|ǖe|ǘe|ǚe|ǜe))|"
-        r"((?:[bpmfdtnlgkhzcswy]|zh|ch|sh)(?:a[1-5]?|[āáǎà]))|"
-        r"((?:[mdtnlgkhzcsry]|zh|ch|sh)(?:e[1-5]?|[ēéěè]))|"
-        r"((?:[bpmdtnlzcsrjqyx]|zh|ch|sh)(?:i[1-5]?|[īíǐì]))|"
-        r"((?:[bpmow])(?:o[1-5]?|[ōóǒò]))|"
-        r"((?:[bpmfdtnlgkhzcsrjqxwy]|zh|ch|sh)(?:u[1-5]?|[ūúǔù]))|"
-        r"((?:[nl])(?:ü[1-5]?|v[1-5]?|[ǖǘǚǜ]))|"
-        r"(eng[1-5]?|ēng|éng|ěng|èng)|"
-        r"(ai[1-5]?|āi|ái|ǎi|ài)|"
-        r"(ao[1-5]?|āo|áo|ǎo|ào)|"
-        r"(ei[1-5]?|ēi|éi|ěi|èi)|"
-        r"(er[1-5]?|ēr|ér|ěr|èr)|"
-        r"((en[1-5]?|ēn|én|ěn|èn))|"
-        r"(ou[1-5]?|ōu|óu|ǒu|òu)|"
-        r"(a[1-5]?|[āáǎà])|"
-        r"(e[1-5]?|[ēéěè])|"
-        r"(o[1-5]?|[ōóǒò])|"
-        r"(\s*\d\s*)"
-        , regex.I
-    )
 
 span_1 = "<span class = 'tone1'>"
 span_2 = "<span class = 'tone2'>"
@@ -79,10 +36,30 @@ def get_tone(syl: str) -> tuple:
     else:
         return (syl, 5)
 
-def add_color_prelim(s: str) -> str:
-    s_clean = regex.sub(SPACE_RE, " ", s)
-    s_split = [get_tone(e) for e in HANZI_PINYIN_NUM_RE.splititer(s_clean) if e and len(e) > 0]
-    return s_split
+def replace_special_char(s: str) -> str:
+    s_out = (s.replace("。", ".")
+              .replace("，", ",")
+              .replace("？", "?")
+              .replace("《", "\"")
+              .replace("》", "\"")
+              .replace("（", "(")
+              .replace("）", ")")
+              .replace("；", ";")
+              .replace("：", ":")
+              .replace("‘", "'")
+              .replace("“", "\"")
+              .replace("、", "\\")
+              .replace("【", "[")
+              .replace("】", "]")
+              .replace("——", "_")
+              .replace("……", "^")
+              .replace("！", "!")
+              .replace("·", "`"))
+    return s_out
+
+def full_split(s: str, delim: str = "|") -> list:
+    """Takes a delimited string and breaks it into syllable pairs."""
+    return [get_tone(syl) for syl in s.split(delim)]
 
 def simplify_split(s_split: list) -> list:
     s_split_simp = []
@@ -107,3 +84,48 @@ def tag_split(s_split: list) -> str:
                         else span_4 + s[0] + end_span if s[1] == 4
                         else span_5 + s[0] + end_span
                         for s in s_split])
+
+def strip_html(x: str):
+    CLEANR = re.compile(r'<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
+
+    while True:
+        input = x
+        x = x.strip()
+        x = re.sub(r"(^<div>|</div>$)", r"", x)
+        x = re.sub(r"(<div>|</div>|<br>)", r"\n", x)
+        x = re.sub(r"\n\s*\n", r"\n", x)
+        x = re.sub(CLEANR, r"", x)
+        if x == input:
+            break
+
+    while True:
+        input = x
+        x = re.sub(r"\n", r"<br>", x)
+        if x == input:
+            break
+
+    return(x)
+
+def add_color_hanzi(s_split: str, c_split: str) -> str:
+    try:
+        assert(len(s_split) == len(c_split))
+        c_split = [(c_split[i][0], s_split[i][1]) for i in range(len(s_split))]
+        c_colored = tag_split(c_split)
+    except:
+        c_colored = "(color error)"
+    return c_colored
+
+def get_silhouette(c: str) -> str:
+    c_out = regex.sub(HANZI_RE, " _ ", c)
+    c_out = regex.sub(SPACE_RE, " ", c_out)
+    c_out = c_out.strip()
+    return c_out
+
+def save_audio(s: str, dir: str, save: bool = True) -> str:
+    out_path = os.path.join(dir, f"{s}.mp3")
+    if save and not os.path.isfile(out_path):
+        try:
+            gTTS(s, lang = "zh-CN").save(out_path)
+        except:
+            return "FAILED WRITING: " + out_path
+    return out_path
