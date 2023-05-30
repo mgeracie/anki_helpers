@@ -1,14 +1,14 @@
 import os
 import re
 import regex
-import zhon
+from zhon import pinyin
 from pinyin_tone_converter.pinyin_tone_converter import PinyinToneConverter
 from utils import *
 from gtts import gTTS
 
 SPACE_RE = regex.compile(r"(\s+)")
 HANZI_RE = regex.compile(r"([\u4e00-\u9fff])")
-PINYIN_RE = regex.compile(zhon.pinyin.syllable, regex.I)
+PINYIN_RE = regex.compile("("+pinyin.syllable+")", regex.I)
 
 span_1 = "<span class = 'tone1'>"
 span_2 = "<span class = 'tone2'>"
@@ -40,6 +40,7 @@ def get_tone(syl: str) -> tuple:
 
 def replace_special_char(s: str) -> str:
     s_out = (s.replace("v", "ü")
+              .replace("//", "")
               .replace("。", ".")
               .replace("，", ",")
               .replace("？", "?")
@@ -62,7 +63,7 @@ def replace_special_char(s: str) -> str:
 
 def full_split(s: str, delim: str = "|") -> list:
     """Takes a delimited string and breaks it into syllable pairs."""
-    return [get_tone(syl) for syl in s.split(delim)]
+    return [get_tone(syl) for syl in s.split(delim) if get_tone(syl) != ("", 5)]
 
 def simplify_split(s_split: list) -> list:
     s_split_simp = []
@@ -111,6 +112,8 @@ def strip_html(x: str):
 
 def add_color_hanzi(s_split: str, c_split: str) -> str:
     try:
+        if len(s_split) != len(c_split):
+            s_split = [tup for tup in s_split if tup[0] != " "]
         assert(len(s_split) == len(c_split))
         c_split = [(c_split[i][0], s_split[i][1]) for i in range(len(s_split))]
         c_colored = tag_split(c_split)
