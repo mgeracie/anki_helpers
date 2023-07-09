@@ -10,12 +10,12 @@ from opencc import OpenCC
 
 # setup
 timestamp = date.today().strftime("%Y%m%d")
-out_path = os.path.join("input", f"singe_character_{timestamp}.csv")
+out_path = os.path.join("input", f"single_character_{timestamp}.csv")
 
 page_nums = range(4,10)
 url_template = Template('http://hanzidb.org/character-list/by-frequency?page=${page_num}')
 
-Columns = namedtuple("Columns", "simp_col, trad_col, mean_col, pin_col")
+Columns = namedtuple("Columns", "simp_col, trad_col, pin_col, mean_col")
 cols = Columns(simp_col = "Simp", trad_col = "Trad", pin_col = "Pinyin", mean_col = "Meaning")
 cols_ordered = cols._asdict().values()
 rename_dict = {"Unnamed: 0": cols.simp_col, "Definition": cols.mean_col, "Pinyin": cols.pin_col}
@@ -34,3 +34,5 @@ df = df[cols_ordered]
 # write out
 df.to_csv(out_path, index = False, header = False)
 
+
+# %%
